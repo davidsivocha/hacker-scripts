@@ -1,14 +1,7 @@
 #!/bin/sh -e
 
-DAYOFWEEK=$(date +%u)
-
-# Skip on weekends
-if [ "$DAYOFWEEK" -eq 6 ] || [ "$DAYOFWEEK" -eq 7 ]; then
-  exit
-fi
-
-# Exit early if any session with my_username is found
-if who | grep -wq 'my_username'; then
+# Exit early if any session with my username is found
+if who | grep -wq $USER; then
   exit
 fi
 
@@ -30,7 +23,7 @@ MESSAGE="Gonna work from home. "$RANDOM_EXCUSE
 # Send a text message
 RESPONSE=`curl -fSs -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN" \
   -d "From=$MY_NUMBER" -d "To=$NUMBER_OF_BOSS" -d "Body=$MESSAGE" \
-  "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_ACCOUNT_SID/SMS/Messages"`
+  "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_ACCOUNT_SID/Messages"`
 
 # Log errors
 if [ $? -gt 0 ]; then
